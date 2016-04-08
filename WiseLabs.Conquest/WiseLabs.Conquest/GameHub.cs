@@ -44,14 +44,14 @@ namespace WiseLabs.Conquest
             return base.OnDisconnected(stopCalled);
         }
 
-        public void OnBeginMoving(int playerId, int fromPlanetId, int toPlanetId, decimal units)
+        public void OnUnitEmission(dynamic unitEmissionInfo)
         {
-            Clients.AllExcept(Context.ConnectionId).onMove(playerId, fromPlanetId, toPlanetId, units);
+            Clients.AllExcept(Context.ConnectionId).onUnitEmission(unitEmissionInfo);
         }
 
         public void SyncGameState(dynamic gameState)
         {
-            Clients.AllExcept(Context.ConnectionId).onGameState(gameState);
+            Clients.AllExcept(Context.ConnectionId).onGameStateReceived(gameState);
         }
 
     }
