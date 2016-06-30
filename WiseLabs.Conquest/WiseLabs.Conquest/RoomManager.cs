@@ -26,12 +26,12 @@ namespace WiseLabs.Conquest
 
             foreach (var room in Rooms)
             {
-                if (room.Players.Count == Constants.MaximumPlayerCount)
+                if (room.Players.Count == Constants.MaximumPlayerCount || room.StartTime.HasValue)
                 { 
-                    // Full
+                    // Full or has already started
                     continue;
                 }
-
+                
                 int? availablePlayerId = null;
                 for (int i = 1; i <= Constants.MaximumPlayerCount; i++)
                 {

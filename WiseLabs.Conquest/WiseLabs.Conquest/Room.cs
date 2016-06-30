@@ -14,5 +14,6 @@ namespace WiseLabs.Conquest
 
         public List<Player> Players { get; set; }
         public int MapId { get; set; }
+        public long? StartTime { get; set; }
     }
 }

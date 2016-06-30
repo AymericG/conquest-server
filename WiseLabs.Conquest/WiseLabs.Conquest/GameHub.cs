@@ -20,14 +20,12 @@ namespace WiseLabs.Conquest
             // Add user to a room that have space available
             var room = RoomManager.Instance.JoinRoom(Context.ConnectionId);
             var player = room.Players.Single(x => x.ConnectionId == Context.ConnectionId);
-            var client = Clients.Client(Context.ConnectionId);
-            client.onJoined(player.PlayerId);
-            Clients.AllExcept(Context.ConnectionId).onPlayerJoined(player.PlayerId);
-
+            
             if (room.Players.Count >= Constants.MinimumRequiredPlayerCountToPlay)
             {
-                var startTime = DateTime.UtcNow.AddSeconds(2).ToUnixTime();
-                Clients.All.onGameStart(startTime, room.MapId, room.Players.Select(x => x.PlayerId));
+                room.StartTime = DateTime.UtcNow.AddSeconds(2).ToUnixTime();
+                Clients.AllExcept(Context.ConnectionId).onGameStart(room.StartTime.Value, room.MapId, room.Players.Select(x => x.PlayerId), null);
+                Clients.Client(Context.ConnectionId).onGameStart(room.StartTime.Value, room.MapId, room.Players.Select(x => x.PlayerId), player.PlayerId);
             }
 
             return base.OnConnected();
@@ -44,14 +42,14 @@ namespace WiseLabs.Conquest
             return base.OnDisconnected(stopCalled);
         }
 
-        public void OnUnitEmission(dynamic unitEmissionInfo)
+        public void OnMove(dynamic moveInfo)
         {
-            Clients.AllExcept(Context.ConnectionId).onUnitEmission(unitEmissionInfo);
+            Clients.AllExcept(Context.ConnectionId).onMove(moveInfo);
         }
 
-        public void SyncGameState(dynamic gameState)
+        public void OnLatestGameState(dynamic gameState)
         {
-            Clients.AllExcept(Context.ConnectionId).onGameStateReceived(gameState);
+            Clients.AllExcept(Context.ConnectionId).onLatestGameState(gameState);
         }
 
     }
